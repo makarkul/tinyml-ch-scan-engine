@@ -1,0 +1,30 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+.env
+
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Run artifacts: keep summary CSVs/PNGs by hand, ignore bulk outputs
+results/**/raw/
+results/**/checkpoints/
+results/**/*.npy
+results/**/*.npz
+results/**/*.pt
+results/**/*.onnx
+
+# Datasets are generated on demand
+data/
+*.h5
+
+.ipynb_checkpoints/
+.DS_Store

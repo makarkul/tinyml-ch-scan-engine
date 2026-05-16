@@ -1,0 +1,24 @@
+name: smoke
+seed: 0
+
+signal:
+  fs: 10_400_000          # Hz (decimated from 104 MS/s reference for smoke speed)
+  scan_bw: 5_000_000
+  n_channels: 25
+  n_samples: 4096
+  quant_bits: 5
+
+dataset:
+  n_train: 256
+  n_val: 64
+  n_test: 64
+  max_carriers: 3
+  snr_db_range: [0, 20]
+  cfo_max_hz: 25_000
+
+baseline:
+  name: fft_energy
+  threshold_db: 6.0
+
+model:
+  name: stub

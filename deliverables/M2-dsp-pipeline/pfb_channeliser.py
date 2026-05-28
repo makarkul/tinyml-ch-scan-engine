@@ -17,7 +17,8 @@ CH_BW_HZ    = 200_000       # channel bandwidth (Hz)
 L           = 16            # filter taps per polyphase branch
 N_FILTER    = L * N_CH      # total prototype filter length = 400 taps
 
-DEFAULT_THRESHOLD = 3.0
+DEFAULT_THRESHOLD = 1.42  # re-tuned after fixing the FFT sign convention bug
+                          # (was 3.0 before the fix; optimal F1 on validation set)
 
 THRESHOLD_SWEEP = np.concatenate([
     np.linspace(0.5,  5.0, 60),
@@ -35,13 +36,59 @@ IMP_NAMES = [
 # ─────────────────────────────────────────────────────────────────────
 
 def design_prototype_filter(n_ch: int, l: int, fs: float) -> np.ndarray:
+    """
+    Design a Kaiser-windowed sinc prototype lowpass filter.
+
+    The prototype filter is the fundamental building block of the PFB.
+    It is a lowpass filter that passes one channel bandwidth (100 kHz)
+    and rejects all higher frequencies.
+
+    Parameters
+    ----------
+    n_ch : number of channels (N = 25)
+    l    : taps per polyphase branch (L = 16)
+    fs   : sample rate in Hz (5 MS/s)
+
+    Returns
+    -------
+    h : (n_ch*l,) float64 — prototype filter coefficients
+
+    Design parameters:
+      Cutoff     : fs / (2*N) = 100 kHz  (half channel bandwidth)
+      Length     : L*N = 400 taps
+      Window     : Kaiser with beta=8 → ~30 dB stopband attenuation
+      Normalised : sum(h) = 1.0  (unity DC gain)
+    """
     fc_norm = (fs / n_ch) / fs   # cutoff as fraction of sample rate = 1/N = 0.04
     h       = firwin(n_ch * l, fc_norm, window=('kaiser', 8.0))
     return h.astype(np.float64)
 
 
 def polyphase_decompose(h: np.ndarray, n_ch: int, l: int) -> np.ndarray:
+    """
+    Decompose the prototype filter h into the polyphase matrix G.
 
+    The prototype filter h[n] of length N*L is split into N short
+    filters of length L, one per channel.
+
+    Polyphase component p contains every N-th tap of h starting at p:
+        g_p[l] = h[p + l*N]  for l = 0, 1, ..., L-1
+
+    Mathematically: h.reshape(L, N) gives a matrix where row l
+    contains the taps h[l*N], h[l*N+1], ..., h[l*N+N-1].
+    Transposing gives G[p, l] = h[p + l*N] — exactly what we want.
+
+    Parameters
+    ----------
+    h    : (N*L,) prototype filter
+    n_ch : N = 25
+    l    : L = 16
+
+    Returns
+    -------
+    G : (N, L) float64 — polyphase filter matrix
+        G[p, :] = the p-th polyphase component filter of length L
+    """
     return h.reshape(l, n_ch).T.astype(np.float64)   # shape (N, L)
 
 
@@ -72,44 +119,81 @@ def prepare_signal(iq_int8: np.ndarray) -> np.ndarray:
 # ─────────────────────────────────────────────────────────────────────
 
 def pfb_process(x: np.ndarray) -> np.ndarray:
+    """
+    Apply the PFB to the decimated signal and return channel powers.
 
+    For each block m of N consecutive input samples:
+      1. Build the input buffer of L*N samples ending at sample (m+1)*N.
+      2. Reverse the buffer for convolution ordering, reshape to (L, N).T
+         giving the polyphase input matrix X of shape (N_CH, L).
+      3. Compute branch outputs:
+            v[p] = sum_l  G[p, l] * X[p, l]  = (G * X).sum(axis=1)
+      4. Compute channel outputs:
+            y_k[m] = IDFT direction of DFT{v}[k]   via fft(conj(v))
+         Apply fftshift so channel k maps to frequency:
+            f_k = -2.4 MHz + k × 200 kHz
+
+    Sign convention note (root cause of the original bug)
+    ------------------------------------------------------
+    The buffer reversal buf[::-1] in step 2 means branch p receives
+    samples indexed at time (m+1)*N - 1 - p, not (m+1)*N - 1 + p.
+    Under this reversed commutation, branch p accumulates phase:
+
+        phi[p] ≈ phi_0 - 2π f p / SCAN_RATE   (decreasing with p)
+
+    The standard np.fft.fft computes:
+        Y[k] = Σ_p v[p] · e^{-j2π k p / N}
+
+    Peaking when  f/SCAN_RATE + k/N = 0  →  k = -f·N/SCAN_RATE.
+
+    For a tone at f = -1 MHz:  k_peak = +1e6·25/5e6 = +5 (before fftshift)
+    → channel 5 + 12 = 17 after fftshift.  But slot 7 is at -1 MHz.
+
+    The fix: conjugate v before the FFT.  conj(v[p]) has phase:
+        -phi[p] ≈ -phi_0 + 2π f p / SCAN_RATE   (increasing with p)
+
+    Now np.fft.fft(conj(v)) peaks when f/SCAN_RATE - k/N = 0
+    → k = f·N/SCAN_RATE.
+    For f = -1 MHz: k_peak = -5 mod 25 = 20 (before fftshift)
+    → channel 20 - 13 = 7 after fftshift.  Correct.
+
+    After processing all blocks, return the mean |y_k|² per channel.
+
+    Parameters
+    ----------
+    x : (M,) complex64 signal at SCAN_RATE
+
+    Returns
+    -------
+    ch_power : (N_CH,) float64 — mean power per channel
+    """
     M        = len(x)
     n_blocks = M // N_CH
-    ch_acc   = np.zeros(N_CH, dtype=np.float64)   # accumulate |y_k|²
+    ch_acc   = np.zeros(N_CH, dtype=np.float64)
 
     for m in range(n_blocks):
-        # Index of the last sample in this block
-        end = (m + 1) * N_CH
-
-        # Build input buffer: need L*N_CH samples ending at 'end'
-        # Earlier samples (before x starts) are treated as zeros
+        end       = (m + 1) * N_CH
         buf_start = end - N_FILTER
         if buf_start >= 0:
             buf = x[buf_start : end]
         else:
-            # Pad with zeros at the start (first few blocks only)
             buf = np.concatenate([
                 np.zeros(-buf_start, dtype=np.complex64),
                 x[0 : end],
             ])
 
-        # Reverse for convolution ordering, then reshape into (L, N_CH)
-        # buf_rev[i] = x[end - 1 - i]
-        # After reshape: row l contains samples l*N_CH apart
         buf_rev = buf[::-1]
-        X       = buf_rev.reshape(L, N_CH).T   # (N_CH, L)
+        X       = buf_rev.reshape(L, N_CH).T        # (N_CH, L)
+        v       = (_G * X).sum(axis=1)              # (N_CH,)
 
-        # Branch outputs: v[p] = G[p,:] · X[p,:]
-        v = (_G * X).sum(axis=1)               # (N_CH,)
+        # FIX: conjugate v before FFT to correct the reversed-commutation
+        # sign convention.  Without conj(), a tone at -1 MHz (slot 7) appears
+        # at channel 17 instead of channel 7.  With conj() it appears at
+        # channel 7 — correct for all 25 slots.
+        y = np.fft.fftshift(np.fft.fft(np.conj(v)))   # (N_CH,)
 
-        # Channel outputs via FFT + fftshift
-        # fftshift maps bin 0 (DC) to centre, negative freqs to the left
-        y = np.fft.fftshift(np.fft.fft(v))    # (N_CH,)
-
-        # Accumulate squared magnitude
         ch_acc += np.abs(y) ** 2
 
-    # Mean power over all blocks
     return ch_acc / max(n_blocks, 1)
 
 
@@ -140,7 +224,18 @@ def detect_channels(ch_power: np.ndarray,
 
 def channelise(iq_int8: np.ndarray,
                threshold_factor: float = DEFAULT_THRESHOLD) -> tuple:
+    """
+    Run the complete PFB channeliser on one IQ sample.
 
+    Steps: 1→2→3→4→5→6→7→8
+
+    Returns
+    -------
+    occupancy   : (25,) uint8
+    ch_power    : (25,) float64
+    noise_floor : float
+    threshold   : float
+    """
     x         = prepare_signal(iq_int8)             # steps 1+2
     ch_power  = pfb_process(x)                      # step 5  (filter designed at import)
     occ, nf, th = detect_channels(ch_power, threshold_factor)  # steps 6+7+8

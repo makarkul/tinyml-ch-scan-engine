@@ -1,0 +1,242 @@
+======================================================================
+GSM CHANNEL SCAN — 156 SCALAR FEATURE REPORT
+======================================================================
+Sample       : ./gsm_dataset/samples/sample_0000005.npy
+SNR          : 16.4 dB
+Active slots : [8, 10, 13]
+Impairments  : ['cfo', 'static_fading', 'tv_fading', 'adj_channel']
+
+Feature breakdown:
+  F1  (I/Q variance)             :  2 features  [global]
+  F2  (envelope variance)         :  1 feature   [global]
+  F3  (ACF at symbol lag)         :  1 feature   [global]
+  F4  (kurtosis)                  :  1 feature   [global]
+  F7  (noise floor)               :  1 feature   [global]
+  F8  (spectral flatness)         : 25 features  [per slot]
+  F9  (in-band flatness)          : 25 features  [per slot]
+  F10 (centroid + spread)         : 50 features  [per slot, 2 each]
+  F11 (PAPR)                      : 25 features  [per slot]
+  F14 (guard-band leakage)        : 25 features  [per slot]
+  ────────────────────────────────────────
+  Total                           : 156 features
+
+
+──────────────────────────────────────────────────────────────────────
+  F1
+──────────────────────────────────────────────────────────────────────
+  Feature name                                Value  Description
+  ───────────────────────────────────  ────────────  ────────────────────
+  F1_var_I                                 8.519894  Variance of I channel. Higher = more ene
+  F1_var_Q                                 8.511651  Variance of Q channel. Higher = more ene
+
+──────────────────────────────────────────────────────────────────────
+  F2
+──────────────────────────────────────────────────────────────────────
+  Feature name                                Value  Description
+  ───────────────────────────────────  ────────────  ────────────────────
+  F2_env_var                               3.668810  Variance of signal envelope sqrt(I^2+Q^2
+
+──────────────────────────────────────────────────────────────────────
+  F3
+──────────────────────────────────────────────────────────────────────
+  Feature name                                Value  Description
+  ───────────────────────────────────  ────────────  ────────────────────
+  F3_acf_sym_lag                          -0.375271  Autocorrelation at GSM symbol lag (18 sa
+
+──────────────────────────────────────────────────────────────────────
+  F4
+──────────────────────────────────────────────────────────────────────
+  Feature name                                Value  Description
+  ───────────────────────────────────  ────────────  ────────────────────
+  F4_kurtosis                              1.517734  Normalised 4th moment (kurtosis). GMSK c
+
+──────────────────────────────────────────────────────────────────────
+  F7
+──────────────────────────────────────────────────────────────────────
+  Feature name                                Value  Description
+  ───────────────────────────────────  ────────────  ────────────────────
+  F7_noise_floor                          11.188359  Median energy across all 25 slots. Used 
+
+──────────────────────────────────────────────────────────────────────
+  F8
+──────────────────────────────────────────────────────────────────────
+  Feature name                                Value  Description
+  ───────────────────────────────────  ────────────  ────────────────────
+  F8_flatness_slot00                       0.917204  Spectral flatness of slot 0 (-2400 kHz).
+  F8_flatness_slot01                       0.898304  Spectral flatness of slot 1 (-2200 kHz).
+  F8_flatness_slot02                       0.912793  Spectral flatness of slot 2 (-2000 kHz).
+  F8_flatness_slot03                       0.938226  Spectral flatness of slot 3 (-1800 kHz).
+  F8_flatness_slot04                       0.922976  Spectral flatness of slot 4 (-1600 kHz).
+  F8_flatness_slot05                       0.905497  Spectral flatness of slot 5 (-1400 kHz).
+  F8_flatness_slot06                       0.920607  Spectral flatness of slot 6 (-1200 kHz).
+  F8_flatness_slot07                       0.766880  Spectral flatness of slot 7 (-1000 kHz).
+  F8_flatness_slot08                       0.038325  Spectral flatness of slot 8 (-800 kHz).   ← OCCUPIED
+  F8_flatness_slot09                       0.843919  Spectral flatness of slot 9 (-600 kHz). 
+  F8_flatness_slot10                       0.898687  Spectral flatness of slot 10 (-400 kHz).  ← OCCUPIED
+  F8_flatness_slot11                       0.898935  Spectral flatness of slot 11 (-200 kHz).
+  F8_flatness_slot12                       0.809002  Spectral flatness of slot 12 (+0 kHz). C
+  F8_flatness_slot13                       0.892493  Spectral flatness of slot 13 (+200 kHz).  ← OCCUPIED
+  F8_flatness_slot14                       0.854930  Spectral flatness of slot 14 (+400 kHz).
+  F8_flatness_slot15                       0.933110  Spectral flatness of slot 15 (+600 kHz).
+  F8_flatness_slot16                       0.905105  Spectral flatness of slot 16 (+800 kHz).
+  F8_flatness_slot17                       0.870999  Spectral flatness of slot 17 (+1000 kHz)
+  F8_flatness_slot18                       0.906968  Spectral flatness of slot 18 (+1200 kHz)
+  F8_flatness_slot19                       0.927180  Spectral flatness of slot 19 (+1400 kHz)
+  F8_flatness_slot20                       0.881073  Spectral flatness of slot 20 (+1600 kHz)
+  F8_flatness_slot21                       0.903901  Spectral flatness of slot 21 (+1800 kHz)
+  F8_flatness_slot22                       0.876484  Spectral flatness of slot 22 (+2000 kHz)
+  F8_flatness_slot23                       0.915130  Spectral flatness of slot 23 (+2200 kHz)
+  F8_flatness_slot24                       0.901743  Spectral flatness of slot 24 (+2400 kHz)
+
+──────────────────────────────────────────────────────────────────────
+  F9
+──────────────────────────────────────────────────────────────────────
+  Feature name                                Value  Description
+  ───────────────────────────────────  ────────────  ────────────────────
+  F9_inband_flat_slot00                    0.183188  Min/mean ratio of slot 0. Low value = de
+  F9_inband_flat_slot01                    0.214326  Min/mean ratio of slot 1. Low value = de
+  F9_inband_flat_slot02                    0.174120  Min/mean ratio of slot 2. Low value = de
+  F9_inband_flat_slot03                    0.395130  Min/mean ratio of slot 3. Low value = de
+  F9_inband_flat_slot04                    0.396518  Min/mean ratio of slot 4. Low value = de
+  F9_inband_flat_slot05                    0.231813  Min/mean ratio of slot 5. Low value = de
+  F9_inband_flat_slot06                    0.276859  Min/mean ratio of slot 6. Low value = de
+  F9_inband_flat_slot07                    0.237489  Min/mean ratio of slot 7. Low value = de
+  F9_inband_flat_slot08                    0.004778  Min/mean ratio of slot 8. Low value = de  ← OCCUPIED
+  F9_inband_flat_slot09                    0.253100  Min/mean ratio of slot 9. Low value = de
+  F9_inband_flat_slot10                    0.272394  Min/mean ratio of slot 10. Low value = d  ← OCCUPIED
+  F9_inband_flat_slot11                    0.231913  Min/mean ratio of slot 11. Low value = d
+  F9_inband_flat_slot12                    0.215310  Min/mean ratio of slot 12. Low value = d
+  F9_inband_flat_slot13                    0.282606  Min/mean ratio of slot 13. Low value = d  ← OCCUPIED
+  F9_inband_flat_slot14                    0.272555  Min/mean ratio of slot 14. Low value = d
+  F9_inband_flat_slot15                    0.345684  Min/mean ratio of slot 15. Low value = d
+  F9_inband_flat_slot16                    0.232440  Min/mean ratio of slot 16. Low value = d
+  F9_inband_flat_slot17                    0.234887  Min/mean ratio of slot 17. Low value = d
+  F9_inband_flat_slot18                    0.437970  Min/mean ratio of slot 18. Low value = d
+  F9_inband_flat_slot19                    0.347542  Min/mean ratio of slot 19. Low value = d
+  F9_inband_flat_slot20                    0.214765  Min/mean ratio of slot 20. Low value = d
+  F9_inband_flat_slot21                    0.361736  Min/mean ratio of slot 21. Low value = d
+  F9_inband_flat_slot22                    0.280783  Min/mean ratio of slot 22. Low value = d
+  F9_inband_flat_slot23                    0.289815  Min/mean ratio of slot 23. Low value = d
+  F9_inband_flat_slot24                    0.384184  Min/mean ratio of slot 24. Low value = d
+
+──────────────────────────────────────────────────────────────────────
+  F10
+──────────────────────────────────────────────────────────────────────
+  Feature name                                Value  Description
+  ───────────────────────────────────  ────────────  ────────────────────
+  F10_centroid_slot00                    -12.032390  Normalised spectral centroid of slot 0. 
+  F10_spread_slot00                        0.273647  Normalised spectral spread of slot 0. Hi
+  F10_centroid_slot01                    -10.995411  Normalised spectral centroid of slot 1. 
+  F10_spread_slot01                        0.308867  Normalised spectral spread of slot 1. Hi
+  F10_centroid_slot02                     -9.974656  Normalised spectral centroid of slot 2. 
+  F10_spread_slot02                        0.288438  Normalised spectral spread of slot 2. Hi
+  F10_centroid_slot03                     -9.032222  Normalised spectral centroid of slot 3. 
+  F10_spread_slot03                        0.296555  Normalised spectral spread of slot 3. Hi
+  F10_centroid_slot04                     -7.986010  Normalised spectral centroid of slot 4. 
+  F10_spread_slot04                        0.303585  Normalised spectral spread of slot 4. Hi
+  F10_centroid_slot05                     -7.030938  Normalised spectral centroid of slot 5. 
+  F10_spread_slot05                        0.266409  Normalised spectral spread of slot 5. Hi
+  F10_centroid_slot06                     -5.998645  Normalised spectral centroid of slot 6. 
+  F10_spread_slot06                        0.272486  Normalised spectral spread of slot 6. Hi
+  F10_centroid_slot07                     -4.890008  Normalised spectral centroid of slot 7. 
+  F10_spread_slot07                        0.270234  Normalised spectral spread of slot 7. Hi
+  F10_centroid_slot08                     -3.689289  Normalised spectral centroid of slot 8.   ← OCCUPIED
+  F10_spread_slot08                        0.063275  Normalised spectral spread of slot 8. Hi  ← OCCUPIED
+  F10_centroid_slot09                     -2.973347  Normalised spectral centroid of slot 9. 
+  F10_spread_slot09                        0.287810  Normalised spectral spread of slot 9. Hi
+  F10_centroid_slot10                     -1.989436  Normalised spectral centroid of slot 10.  ← OCCUPIED
+  F10_spread_slot10                        0.283850  Normalised spectral spread of slot 10. H  ← OCCUPIED
+  F10_centroid_slot11                     -1.017024  Normalised spectral centroid of slot 11.
+  F10_spread_slot11                        0.287035  Normalised spectral spread of slot 11. H
+  F10_centroid_slot12                      0.073409  Normalised spectral centroid of slot 12.
+  F10_spread_slot12                        0.309866  Normalised spectral spread of slot 12. H
+  F10_centroid_slot13                      1.021508  Normalised spectral centroid of slot 13.  ← OCCUPIED
+  F10_spread_slot13                        0.281803  Normalised spectral spread of slot 13. H  ← OCCUPIED
+  F10_centroid_slot14                      2.055893  Normalised spectral centroid of slot 14.
+  F10_spread_slot14                        0.263425  Normalised spectral spread of slot 14. H
+  F10_centroid_slot15                      3.000697  Normalised spectral centroid of slot 15.
+  F10_spread_slot15                        0.282367  Normalised spectral spread of slot 15. H
+  F10_centroid_slot16                      4.027798  Normalised spectral centroid of slot 16.
+  F10_spread_slot16                        0.293795  Normalised spectral spread of slot 16. H
+  F10_centroid_slot17                      5.021144  Normalised spectral centroid of slot 17.
+  F10_spread_slot17                        0.270058  Normalised spectral spread of slot 17. H
+  F10_centroid_slot18                      5.995781  Normalised spectral centroid of slot 18.
+  F10_spread_slot18                        0.281900  Normalised spectral spread of slot 18. H
+  F10_centroid_slot19                      6.991155  Normalised spectral centroid of slot 19.
+  F10_spread_slot19                        0.283018  Normalised spectral spread of slot 19. H
+  F10_centroid_slot20                      7.947362  Normalised spectral centroid of slot 20.
+  F10_spread_slot20                        0.287161  Normalised spectral spread of slot 20. H
+  F10_centroid_slot21                      8.994689  Normalised spectral centroid of slot 21.
+  F10_spread_slot21                        0.262434  Normalised spectral spread of slot 21. H
+  F10_centroid_slot22                     10.009752  Normalised spectral centroid of slot 22.
+  F10_spread_slot22                        0.261831  Normalised spectral spread of slot 22. H
+  F10_centroid_slot23                     10.991649  Normalised spectral centroid of slot 23.
+  F10_spread_slot23                        0.267294  Normalised spectral spread of slot 23. H
+  F10_centroid_slot24                     12.057695  Normalised spectral centroid of slot 24.
+  F10_spread_slot24                        0.281297  Normalised spectral spread of slot 24. H
+
+──────────────────────────────────────────────────────────────────────
+  F11
+──────────────────────────────────────────────────────────────────────
+  Feature name                                Value  Description
+  ───────────────────────────────────  ────────────  ────────────────────
+  F11_papr_slot00                          2.444925  Peak-to-average power ratio of slot 0. V
+  F11_papr_slot01                          2.405176  Peak-to-average power ratio of slot 1. V
+  F11_papr_slot02                          1.983207  Peak-to-average power ratio of slot 2. V
+  F11_papr_slot03                          1.952364  Peak-to-average power ratio of slot 3. V
+  F11_papr_slot04                          1.869414  Peak-to-average power ratio of slot 4. V
+  F11_papr_slot05                          1.897706  Peak-to-average power ratio of slot 5. V
+  F11_papr_slot06                          1.980910  Peak-to-average power ratio of slot 6. V
+  F11_papr_slot07                          7.861068  Peak-to-average power ratio of slot 7. V
+  F11_papr_slot08                         25.023246  Peak-to-average power ratio of slot 8. V  ← OCCUPIED
+  F11_papr_slot09                          5.433444  Peak-to-average power ratio of slot 9. V
+  F11_papr_slot10                          2.091128  Peak-to-average power ratio of slot 10.   ← OCCUPIED
+  F11_papr_slot11                          2.156112  Peak-to-average power ratio of slot 11. 
+  F11_papr_slot12                          4.859928  Peak-to-average power ratio of slot 12. 
+  F11_papr_slot13                          2.194061  Peak-to-average power ratio of slot 13.   ← OCCUPIED
+  F11_papr_slot14                          2.489674  Peak-to-average power ratio of slot 14. 
+  F11_papr_slot15                          1.913447  Peak-to-average power ratio of slot 15. 
+  F11_papr_slot16                          2.481332  Peak-to-average power ratio of slot 16. 
+  F11_papr_slot17                          2.314290  Peak-to-average power ratio of slot 17. 
+  F11_papr_slot18                          2.460644  Peak-to-average power ratio of slot 18. 
+  F11_papr_slot19                          1.938559  Peak-to-average power ratio of slot 19. 
+  F11_papr_slot20                          2.155203  Peak-to-average power ratio of slot 20. 
+  F11_papr_slot21                          2.708603  Peak-to-average power ratio of slot 21. 
+  F11_papr_slot22                          2.916141  Peak-to-average power ratio of slot 22. 
+  F11_papr_slot23                          2.156049  Peak-to-average power ratio of slot 23. 
+  F11_papr_slot24                          2.237369  Peak-to-average power ratio of slot 24. 
+
+──────────────────────────────────────────────────────────────────────
+  F14
+──────────────────────────────────────────────────────────────────────
+  Feature name                                Value  Description
+  ───────────────────────────────────  ────────────  ────────────────────
+  F14_leakage_slot00                       0.025336  Guard-band leakage ratio of slot 0. High
+  F14_leakage_slot01                       0.025236  Guard-band leakage ratio of slot 1. High
+  F14_leakage_slot02                       0.075044  Guard-band leakage ratio of slot 2. High
+  F14_leakage_slot03                       0.056459  Guard-band leakage ratio of slot 3. High
+  F14_leakage_slot04                       0.041316  Guard-band leakage ratio of slot 4. High
+  F14_leakage_slot05                       0.063350  Guard-band leakage ratio of slot 5. High
+  F14_leakage_slot06                       0.030133  Guard-band leakage ratio of slot 6. High
+  F14_leakage_slot07                       0.032362  Guard-band leakage ratio of slot 7. High
+  F14_leakage_slot08                       0.000527  Guard-band leakage ratio of slot 8. High  ← OCCUPIED
+  F14_leakage_slot09                       0.045612  Guard-band leakage ratio of slot 9. High
+  F14_leakage_slot10                       0.027619  Guard-band leakage ratio of slot 10. Hig  ← OCCUPIED
+  F14_leakage_slot11                       0.045222  Guard-band leakage ratio of slot 11. Hig
+  F14_leakage_slot12                       0.033416  Guard-band leakage ratio of slot 12. Hig
+  F14_leakage_slot13                       0.050469  Guard-band leakage ratio of slot 13. Hig  ← OCCUPIED
+  F14_leakage_slot14                       0.036779  Guard-band leakage ratio of slot 14. Hig
+  F14_leakage_slot15                       0.043744  Guard-band leakage ratio of slot 15. Hig
+  F14_leakage_slot16                       0.045419  Guard-band leakage ratio of slot 16. Hig
+  F14_leakage_slot17                       0.043285  Guard-band leakage ratio of slot 17. Hig
+  F14_leakage_slot18                       0.048658  Guard-band leakage ratio of slot 18. Hig
+  F14_leakage_slot19                       0.046612  Guard-band leakage ratio of slot 19. Hig
+  F14_leakage_slot20                       0.048653  Guard-band leakage ratio of slot 20. Hig
+  F14_leakage_slot21                       0.039703  Guard-band leakage ratio of slot 21. Hig
+  F14_leakage_slot22                       0.024553  Guard-band leakage ratio of slot 22. Hig
+  F14_leakage_slot23                       0.032332  Guard-band leakage ratio of slot 23. Hig
+  F14_leakage_slot24                       0.008963  Guard-band leakage ratio of slot 24. Hig
+
+======================================================================
+END OF REPORT
+======================================================================

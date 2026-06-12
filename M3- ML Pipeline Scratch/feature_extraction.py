@@ -100,10 +100,6 @@ def _segment_energies(signal: np.ndarray, k: int) -> np.ndarray:
     return energies
 
 
-# ─────────────────────────────────────────────────────────────────────
-#  STEP 3 — PER-SLOT FEATURES
-# ─────────────────────────────────────────────────────────────────────
-
 def _per_slot_features(
     signal    : np.ndarray,
     corr_full : np.ndarray,
